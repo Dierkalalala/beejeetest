@@ -62,7 +62,6 @@ export class TasksEntityActions {
     }
     static checkAuth = () => (dispatch: Dispatch) => {
         let token = getCookie('jwt');
-        console.log(token);
         if (token) {
             dispatch(login(token))
         }
@@ -71,6 +70,7 @@ export class TasksEntityActions {
     static editTask = (id : number, editData: TaskEditing) => async (dispatch: Dispatch) => {
         try {
             let editedData = await TaskApi.taskEditing(id, editData);
+            console.log(editData);
             if (editedData.data.status === 'ok') {
                 dispatch(editTask({id: id, status: editData.status, text: editData.text}))
             }

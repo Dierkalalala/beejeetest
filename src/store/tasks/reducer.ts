@@ -52,10 +52,11 @@ const tasksReducer = createReducer(defaultState)
             let indexOfEditedTask = state.item.tasks.findIndex(task => {
                 return task.id === action.payload?.id
             })
+
             if (action.payload.text) {
                 state.item.tasks[indexOfEditedTask].text = action.payload.text
             }
-            if (action.payload.status) {
+            if (action.payload.status !== undefined) {
                 state.item.tasks[indexOfEditedTask].status = action.payload.status
             }
         }

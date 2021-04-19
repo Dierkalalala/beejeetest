@@ -19,7 +19,7 @@ class TaskApi extends BaseApi {
     public taskEditing(id: number, taskEditingData: TaskEditing): Promise<AxiosResponse> {
         let taskFormData = new FormData();
         taskFormData.append('token', taskEditingData.token)
-        if (taskEditingData.status) {
+        if (taskEditingData.status !== undefined) {
             taskFormData.append('status', String(taskEditingData.status))
         }
         if (taskEditingData.text) {
