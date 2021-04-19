@@ -1,4 +1,5 @@
 import React from "react";
+
 type TaskProps = {
     id: number
     username: string,
@@ -13,35 +14,49 @@ class Task extends React.Component<TaskProps> {
             case 0:
                 return (
                     <>
-                        Не выполнено
+                        <div className="d-flex justify-content-center">
+                            Не выполнено
+                        </div>
                     </>
                 )
             case 1:
                 return (
                     <>
-                        Не выполнено, отредактировано
+                        <div className="d-flex justify-content-between">
+                            <p>
+                                Не выполнено
+                            </p>
+                            <p>
+                                отредактировано
+                            </p>
+                        </div>
                     </>
                 )
             case 10:
                 return (
                     <>
-                        Выполнено
+                        <div className="d-flex justify-content-center">
+                            Выполнено
+                        </div>
                     </>
                 )
             case 11:
                 return (
                     <>
-                        Выполнено, отредактировано
+                        <div className="d-flex justify-content-between">
+                            <p>Выполнено</p> <p> отредактировано</p>
+                        </div>
                     </>
                 )
         }
     }
+
     render() {
         return (
-            <div>
-                <div>
-                    <div className="row">
-                        <div>
+            <div className="col-lg-4 text-center">
+                <div className="">
+                    <div className="d-flex task-title card-title justify-content-center">
+                        <div className="mr-2">
                             {this.props.username}
                         </div>
                         <div>
@@ -50,14 +65,13 @@ class Task extends React.Component<TaskProps> {
                     </div>
 
                 </div>
-                <div>
-                    <div>{this.props.text}</div>
+                <div className="card-body">
+                    <div className="task-card-text card-text">{this.props.text}</div>
                 </div>
-                <div>
-                    Task 1 status
-                </div>
+                {this.renderTaskStatus(this.props.status)}
             </div>
         )
     }
 }
+
 export default Task;

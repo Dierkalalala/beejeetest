@@ -1,7 +1,7 @@
 import {ThunkDispatch} from 'redux-thunk';
 import {AnyAction} from 'redux';
 import {action} from 'typesafe-actions';
-import {setCookie, getCookie} from "../../helper/cookie";
+import {setCookie, getCookie, deleteCookie} from "../../helper/cookie";
 
 import TaskApi from "../../api/TaskApi";
 import {TaskCreationDTO, Task, TasksDTO, signInData, TaskEditingWithId, TaskEditing} from "../../types/types";
@@ -14,12 +14,16 @@ export const SET_TASK = 'SET_TASK'
 export const EDIT_TASK = 'EDIT_TASK';
 export const PENDING_TASKS = 'PENDING_TASKS';
 export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT'
+export const AUTH_ERROR = 'AUTH_ERROR';
 
 export const setTasks = (tasks: TasksDTO) => action(SET_TASKS, {item: tasks});
 export const setTask = (task: Task) => action(SET_TASK, task);
 export const editTask = (editedTask: TaskEditingWithId) => action(EDIT_TASK, editedTask)
 export const pendingTasks = () => action(PENDING_TASKS);
 export const login = (token: string) => action(LOGIN, {jwt: token});
+export const logOut = () => action(LOGOUT)
+export const authError = (errorMessage: string) => action(AUTH_ERROR, errorMessage);
 
 type Dispatch = ThunkDispatch<ITasksStore, void, AnyAction>;
 
@@ -54,7 +58,8 @@ export class TasksEntityActions {
                 setCookie('jwt', logIn.data.message.token, {expires: expirationDate});
                 dispatch(login(logIn.data.message.token));
             } else {
-                alert('Кривые данные')
+                console.log(logIn.data.message.password);
+                dispatch(authError(logIn.data.message.password))
             }
         } catch (e) {
             console.log(e);
@@ -66,11 +71,15 @@ export class TasksEntityActions {
             dispatch(login(token))
         }
     }
-
+    static logOut = () => (dispatch: Dispatch) => {
+        deleteCookie('jwt');
+        localStorage.setItem('loggedOut', 'true');
+        localStorage.removeItem('loggedOut');
+        dispatch(logOut())
+    }
     static editTask = (id : number, editData: TaskEditing) => async (dispatch: Dispatch) => {
         try {
             let editedData = await TaskApi.taskEditing(id, editData);
-            console.log(editData);
             if (editedData.data.status === 'ok') {
                 dispatch(editTask({id: id, status: editData.status, text: editData.text}))
             }

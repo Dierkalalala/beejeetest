@@ -6,20 +6,22 @@ import {ITasksStore} from "../../store/tasks/types";
 import {AnyAction} from "redux";
 import {signInData} from "../../types/types";
 import {connect} from "react-redux";
-import { Redirect } from "react-router-dom";
+import {Redirect} from "react-router-dom";
 
 type Dispatch = ThunkDispatch<ITasksStore, void, AnyAction>;
 
 interface DispatchToProps {
     logIn: (loginData: signInData) => void;
 }
+
 interface MapStateToProps {
-    jwt: string
+    jwt: string,
+    authError: string
 }
+
 interface IProps extends DispatchToProps, MapStateToProps {
 
 }
-
 
 
 class LoginPage extends React.Component<IProps> {
@@ -27,12 +29,19 @@ class LoginPage extends React.Component<IProps> {
     state = {
         login: '',
         password: '',
-        errorMessage: ''
+        errorMessage: this.props.authError
     }
 
     onSubmit = (event: FormEvent) => {
         event.preventDefault();
+        this.setState({errorMessage: ''})
         let {login, password} = this.state;
+
+        if (login === '' || password === '') {
+            this.setState({errorMessage: 'Заполните все поля'});
+            return;
+        }
+
         this.props.logIn({login, password});
     }
 
@@ -56,24 +65,33 @@ class LoginPage extends React.Component<IProps> {
             )
         }
         return (
-            <form onSubmit={this.onSubmit}>
-                <input onChange={this.onControlChange} name='login' type='text' placeholder='Логин'/>
-                <input onChange={this.onControlChange} name='password' type='password'
-                       placeholder='*******'/>
+            <div className="container">
+                <form className="mt-5 auth_form" onSubmit={this.onSubmit}>
+                    <label className="d-block mb-3">
+                        <span className="d-block mb-2">Логин</span>
+                        <input onChange={this.onControlChange} className="w-100 form-control" name='login' type='text' placeholder='Логин'/>
+                    </label>
+                    <label className="d-block mb-3">
+                        <span className="d-block mb-2">Пароль</span>
+                        <input onChange={this.onControlChange} className="w-100 form-control" name='password' type='password'
+                               placeholder='*******'/>
+                    </label>
+                    <div className='error text-danger mb-3'>
+                        {this.state.errorMessage ? this.state.errorMessage : this.props.authError}
+                    </div>
+                    <div>
+                        <button className="btn btn-primary">Sign In</button>
+                    </div>
 
-                <div>
-                    <button>Sign In</button>
-                </div>
-                <div className='error'>
-                    {this.state.errorMessage}
-                </div>
-            </form>
+                </form>
+            </div>
         );
     }
 }
 
 const mapStateToProps = (state: IStoreState): MapStateToProps => ({
-    jwt: state.tasks.jwt
+    jwt: state.tasks.jwt,
+    authError: state.tasks.authError
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchToProps => ({

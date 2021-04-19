@@ -53,7 +53,7 @@ class StartPage extends React.Component<Props> {
     reloadTasks = () => {
         let query = '';
 
-        query += `&page=${this.state.activePage + 1}`;
+        query += `&page=${this.state.activePage}`;
 
         if (this.state.filteringValue) {
             query += `&sort_field=${this.state.filteringValue}`;
@@ -87,6 +87,8 @@ class StartPage extends React.Component<Props> {
             return (
                 <>
                     <Pagination
+                        itemClass="page-item"
+                        linkClass="page-link"
                         activePage={this.state.activePage}
                         itemsCountPerPage={3}
                         totalItemsCount={totalTaskCount}
@@ -113,20 +115,20 @@ class StartPage extends React.Component<Props> {
         }
 
         return (
-            <div>
-                <h1> StartPage </h1>
-                <div className="add_task_form_wrapper">
+            <div className='container mt-3'>
+                <h1 className="modal-title mb-4"> Задачи </h1>
+                <div className="add_task_form_wrapper mb-5 pb-3">
                     <AddTask/>
                 </div>
                 <div className="tasks">
 
-                    <div className="tasks-sorting">
-                        <div>
-                            <div>
+                    <div className="tasks-sorting d-flex align-items-center">
+                        <div className="w-50">
+                            <div className="card-title">
                                 Отсортировать по
                             </div>
-                            <div>
-                                <select name="filteringValue" onChange={this.handleSelectChange}>
+                            <div >
+                                <select className="form-control" name="filteringValue" onChange={this.handleSelectChange}>
                                     <option selected disabled>Выберите опцию</option>
                                     <option value="id">
                                         Номеру
@@ -143,12 +145,12 @@ class StartPage extends React.Component<Props> {
                                 </select>
                             </div>
                         </div>
-                        <div>
-                            <div>
+                        <div className="w-50">
+                            <div className="card-title">
                                 В порядке
                             </div>
                             <div>
-                                <select name="filteringType" onChange={this.handleSelectChange}>
+                                <select className="form-control" name="filteringType" onChange={this.handleSelectChange}>
                                     <option selected disabled>Выберите опцию</option>
                                     <option value="desc">
                                         Убывания
@@ -161,7 +163,7 @@ class StartPage extends React.Component<Props> {
                         </div>
                     </div>
 
-                    <div className="tasks-wrapper">
+                    <div className="tasks-wrapper mt-5 row">
                         {this.renderTasks(this.props.tasks.item.tasks)}
                     </div>
 

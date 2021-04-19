@@ -4,7 +4,7 @@ import {
     EDIT_TASK,
     SET_TASK,
     PENDING_TASKS,
-    LOGIN,
+    LOGIN, LOGOUT, AUTH_ERROR,
 } from './actions';
 
 import {IAction} from '../types';
@@ -17,7 +17,9 @@ const defaultState: ITasksStore = {
         tasks: [],
         total_task_count: 0
     },
-    jwt: ''
+    jwt: '',
+    authError: '',
+    taskCreationError: ''
 };
 const tasksReducer = createReducer(defaultState)
     .handleAction(SET_TASKS, (state: ITasksStore, action: IAction<ITasksStore>) => ({
@@ -45,6 +47,7 @@ const tasksReducer = createReducer(defaultState)
     .handleAction(LOGIN, (state: ITasksStore, action: IAction<{ jwt: string }>) => ({
         ...state,
         ...action.payload,
+        authError: '',
         status: 'ok'
     }))
     .handleAction(EDIT_TASK, (state: ITasksStore, action: IAction<TaskEditingWithId>) => {
@@ -66,5 +69,15 @@ const tasksReducer = createReducer(defaultState)
             status: 'ok'
         }
     })
+    .handleAction(LOGOUT, (state: ITasksStore) => ({
+        ...state,
+        jwt: '',
+        status: 'ok'
+    }))
+    .handleAction(AUTH_ERROR, (state: ITasksStore, action: IAction<string>) => ({
+        ...state,
+        authError: action.payload,
+        status: 'ok',
+    }))
 
 export default tasksReducer

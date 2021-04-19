@@ -1,5 +1,6 @@
 import {BASE_API_URL} from '../misc/constants';
 import axios, {AxiosResponse} from 'axios';
+import sanitizeHtml from 'sanitize-html';
 
 /*axios.defaults.withCredentials = true;*/
 
@@ -9,7 +10,14 @@ export class BaseApi {
     }
 
     public post<D, T>(url: string, data?: D): Promise<AxiosResponse<T>> {
-        return axios.post<T>(this._url(url), data);
+        let sanitezedFormData = new FormData();
+        // @ts-ignore
+        for (let pair of data.entries())
+        {
+            sanitezedFormData.append(pair[0], sanitizeHtml(pair[1]))
+        }
+
+        return axios.post<T>(this._url(url), sanitezedFormData);
     }
 
     public put<D, T>(url: string, data?: D): Promise<AxiosResponse<T>> {

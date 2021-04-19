@@ -14,9 +14,11 @@ type Dispatch = ThunkDispatch<ITasksStore, void, AnyAction>;
 type StateProps = {
     tasks: ITasksStore
 }
+
 interface DispatchToProps {
     editTask: (id: number, editTask: TaskEditing) => void;
     getTasks: (additionalParams?: string) => void;
+    logOut: () => void;
 }
 
 interface IProps extends DispatchToProps {
@@ -25,6 +27,14 @@ interface IProps extends DispatchToProps {
 
 
 class AdminPage extends React.PureComponent<IProps> {
+    componentDidMount() {
+        let self = this;
+        window.addEventListener('storage', function (event) {
+            if (event.key === 'loggedOut') {
+                self.props.logOut();
+            }
+        });
+    }
 
     state = {
         activePage: 1
@@ -58,7 +68,7 @@ class AdminPage extends React.PureComponent<IProps> {
     reloadTasks = () => {
         let query = '';
 
-        query += `&page=${this.state.activePage + 1}`;
+        query += `&page=${this.state.activePage}`;
 
         this.props.getTasks(query);
     }
@@ -68,14 +78,14 @@ class AdminPage extends React.PureComponent<IProps> {
             return (
                 <>
                     <Pagination
+                        itemClass="page-item"
+                        linkClass="page-link"
                         activePage={this.state.activePage}
                         itemsCountPerPage={3}
                         totalItemsCount={totalTaskCount}
                         pageRangeDisplayed={5}
                         onChange={this.handlePageChange.bind(this)}
                     >
-
-
                     </Pagination>
                 </>
             )
@@ -85,12 +95,12 @@ class AdminPage extends React.PureComponent<IProps> {
     render() {
         const {tasks} = this.props
         return (
-            <div>
-                <h1> Admin Page for tasks editing </h1>
+            <div className="container">
+                <h1 className="mt-5 mb-5"> Административная панель для задач </h1>
 
                 <div className="tasks">
 
-                    <div className="tasks-wrapper">
+                    <div className="tasks-wrapper row">
                         {this.renderTasks(tasks.item.tasks)}
                     </div>
                 </div>
@@ -101,14 +111,16 @@ class AdminPage extends React.PureComponent<IProps> {
         )
     }
 }
+
 const mapStateToProps = (state: IStoreState): StateProps => ({
     tasks: state.tasks,
 
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) : DispatchToProps => ({
+const mapDispatchToProps = (dispatch: Dispatch): DispatchToProps => ({
     editTask: (id: number, editTask: TaskEditing) => dispatch(TasksEntityActions.editTask(id, editTask)),
-    getTasks: (additionalParams: string = '') => dispatch(TasksEntityActions.getTasks(additionalParams))
+    getTasks: (additionalParams: string = '') => dispatch(TasksEntityActions.getTasks(additionalParams)),
+    logOut: () => dispatch(TasksEntityActions.logOut())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AdminPage);

@@ -13,11 +13,13 @@ type TaskProps = {
 
 class AdminTask extends React.Component<TaskProps> {
 
+
     state = {
         id: this.props.id,
         text: this.props.text,
         status: this.props.status
     }
+
 
     updateStatus = async () => {
         if (this.state.status === 0) {
@@ -61,7 +63,6 @@ class AdminTask extends React.Component<TaskProps> {
     }
 
     renderStatus() {
-        console.log(this.state.status);
 
         if (this.state.status === 0 || this.state.status === 1) {
             return (
@@ -82,11 +83,11 @@ class AdminTask extends React.Component<TaskProps> {
     render() {
         return (
             <>
-                <div className="admin-task">
+                <div className="admin-task col-lg-4">
 
                     <div>
-                        <div className="row">
-                            <div>
+                        <div className="d-flex task-title card-title">
+                            <div className="mr-1">
                                 {this.props.username}
                             </div>
                             <div>
@@ -96,29 +97,28 @@ class AdminTask extends React.Component<TaskProps> {
 
                     </div>
                     <div>
-                        <div>{this.props.text}</div>
-                    </div>
-                    <div>
-                        Task 1 status
-                    </div>
-                    <div>
-
-                        <div>
-                            <button type="button" className="default-button">Edit</button>
-                        </div>
+                        <div className='task-card-text'>{this.props.text}</div>
                     </div>
 
-                    <div className="editing_panel">
+                    <div className="editing_panel mt-5">
                         <form onSubmit={this.onSubmit}>
-                            <textarea onChange={this.onTextChange} defaultValue={this.state.text} name="text"/>
+                            <label className='d-block'>
+                                <span className="d-block mb-3">
+                                    Изменить описание задачи
+                                </span>
+                                <textarea className="form-control" onChange={this.onTextChange}
+                                          defaultValue={this.state.text} name="text"/>
+
+                            </label>
+
                             <div>
-                                <label>
-                                    <span>Выполнено </span>
+                                <label className="d-flex justify-content-center align-items-center">
+                                    <span className="d-block mr-3">Выполнено </span>
                                     {this.renderStatus()}
 
                                 </label>
                             </div>
-                            <input type="submit"/>
+                            <input value="Изменить" className="btn btn-primary m-auto d-block" type="submit"/>
                         </form>
                     </div>
                 </div>
